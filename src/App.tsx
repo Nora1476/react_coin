@@ -1,6 +1,7 @@
 import { RouterProvider } from "react-router-dom";
 import Router from "./Router";
 import { createGlobalStyle } from "styled-components";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 //렌더링 될때 스타일 컴포넌트를 전역 스코프르 올려줌
 const GlobalStyle = createGlobalStyle`
@@ -70,6 +71,7 @@ function App() {
     <>
       <GlobalStyle />
       <RouterProvider router={Router} />;
+      <ReactQueryDevtools initialIsOpen={true} />
     </>
   );
 }

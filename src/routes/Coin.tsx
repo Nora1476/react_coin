@@ -1,8 +1,19 @@
-import { useEffect, useState } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useQuery } from "react-query";
+import { useParams, useLocation, Outlet, useMatch } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
-import axios from "axios";
+import { fetchCoinInfo, fetchCoinTickers } from "../api";
 
+const Title = styled.h1`
+  font-size: 48px;
+  white-space: nowrap;
+  color: ${(props) => props.theme.accentColor};
+`;
+const Loader = styled.span`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 const Container = styled.div`
   padding: 0 20px;
   max-width: 480px;
@@ -14,15 +25,44 @@ const Header = styled.header`
   justify-content: center;
   align-items: center;
 `;
-const Loader = styled.span`
+const Overview = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px 20px;
+  border-radius: 10px;
 `;
-const Title = styled.h1`
-  font-size: 48px;
-  white-space: nowrap;
-  color: ${(props) => props.theme.accentColor};
+const OverviewItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  span:first-child {
+    font-size: 10px;
+    font-weight: 400;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+`;
+const Description = styled.p`
+  margin: 20px 0px;
+`;
+const Tabs = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin: 25px 0;
+  gap: 10px;
+`;
+const Tab = styled.span<{ isActive: boolean }>`
+  display: block;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 500;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 8px;
+  border-radius: 10px;
+  color: ${(props) => (props.isActive ? props.theme.accentColor : props.theme.textColor)};
 `;
 
 interface RouteParams {
@@ -94,38 +134,70 @@ interface PriceData {
 }
 
 function Coin() {
-  const [loading, setLoading] = useState(true);
   //useParams훅 사용하여 url 파라미터 값 가져옴
   const { coinId } = useParams() as unknown as RouteParams;
   const { state } = useLocation() as LocationState;
-  const [info, setInfo] = useState<InfoData>();
-  const [priceInfo, setpriceInfo] = useState<PriceData>();
 
-  const getCoins = async () => {
-    //axcios 사용
-    const infoData = await axios(`https://api.coinpaprika.com/v1/coins/${coinId}`);
-    const priceData = await axios(`https://api.coinpaprika.com/v1/tickers/${coinId}`);
+  const priceMatch = useMatch("/:coinId/price");
+  const charMatch = useMatch("/:coinId/chart");
 
-    //fatch함수 사용
-    // const response = await (await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)).json();
-    // const response = await (await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)).json();
+  // const { isLoading: infoLoading, data: infoData } = useQuery<InfoData>(["info", coinId], () => fetchCoinInfo(coinId));
+  // const { isLoading: tickersLoading, data: tickersData } = useQuery<PriceData>(["tickers", coinId], () => fetchCoinTickers(coinId));
 
-    // console.log(infoData.data);
-    console.log(priceData.data);
+  const { isLoading: infoLoading, data: infoData } = useQuery<InfoData>(["info", coinId], () => fetchCoinInfo(coinId));
+  const { isLoading: tickersLoading, data: tickersData } = useQuery<PriceData>(["tickers", coinId], () => fetchCoinTickers(coinId));
 
-    setInfo(infoData.data);
-    setpriceInfo(priceData.data);
-  };
+  const loading = infoLoading || tickersLoading;
 
-  useEffect(() => {
-    getCoins();
-  }, []);
   return (
     <Container>
       <Header>
-        <Title>{state?.name || "Loading..SS"}</Title>
+        {/*  ?. dl syntax는  satate애 name 있는지 없는지를 확인하고 실행여부 결정
+              즉, state 내에 name이 없으면 제일앞에 3항 연산자는 false로 출력되어 loading 부분 실행 */}
+        <Title>{state?.name ? state.name : loading ? "Loading..." : infoData?.name}</Title>
       </Header>
-      {loading ? <Loader>Loading...</Loader> : null}
+      {loading ? (
+        <Loader>Loading...</Loader>
+      ) : (
+        <>
+          <Overview>
+            <OverviewItem>
+              <span>Rank:</span>
+              <span>{infoData?.rank}</span>
+            </OverviewItem>
+            <OverviewItem>
+              <span>Symbol:</span>
+              <span>${infoData?.symbol}</span>
+            </OverviewItem>
+            <OverviewItem>
+              <span>Open Source:</span>
+              <span>{infoData?.open_source ? "Yes" : "No"}</span>
+            </OverviewItem>
+          </Overview>
+          <Description>{infoData?.description}</Description>
+          <Overview>
+            <OverviewItem>
+              <span>Total Suply:</span>
+              <span>{tickersData?.total_supply}</span>
+            </OverviewItem>
+            <OverviewItem>
+              <span>Max Supply:</span>
+              <span>{tickersData?.max_supply}</span>
+            </OverviewItem>
+          </Overview>
+
+          <Tabs>
+            <Tab isActive={charMatch !== null}>
+              <Link to={`/${coinId}/chart`}>Chart</Link>
+            </Tab>
+            <Tab isActive={priceMatch !== null}>
+              <Link to={`/${coinId}/price`}>price</Link>
+            </Tab>
+          </Tabs>
+
+          <Outlet />
+        </>
+      )}
     </Container>
   );
 }
