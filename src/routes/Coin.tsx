@@ -185,7 +185,6 @@ function Coin() {
               <span>{tickersData?.max_supply}</span>
             </OverviewItem>
           </Overview>
-
           <Tabs>
             <Tab isActive={charMatch !== null}>
               <Link to={`/${coinId}/chart`}>Chart</Link>
@@ -195,7 +194,8 @@ function Coin() {
             </Tab>
           </Tabs>
 
-          <Outlet />
+          {/* 1. 상위 컴포넌트에서 Outlet컴포넌트에 context에 prop를 전달합니다. */}
+          <Outlet context={{ coinId: coinId }} />
         </>
       )}
     </Container>
