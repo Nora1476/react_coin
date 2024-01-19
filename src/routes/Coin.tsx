@@ -166,7 +166,7 @@ function Coin() {
         {/*  ?. dl syntax는  satate애 name 있는지 없는지를 확인하고 실행여부 결정
               즉, state 내에 name이 없으면 제일앞에 3항 연산자는 false로 출력되어 loading 부분 실행 */}
         <Title>{state?.name ? state.name : loading ? "Loading..." : infoData?.name}</Title>
-        <Link to={"/"}> &larr; Back to List </Link>
+        <Link to={`${process.env.PUBLIC_URL}/`}> &larr; Back to List </Link>
       </Header>
       {loading ? (
         <Loader>Loading...</Loader>
