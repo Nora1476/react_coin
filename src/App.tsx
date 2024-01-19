@@ -6,6 +6,7 @@ import { ReactQueryDevtools } from "react-query/devtools";
 //렌더링 될때 스타일 컴포넌트를 전역 스코프르 올려줌
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&display=swap');
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
