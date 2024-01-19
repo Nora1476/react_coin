@@ -18,7 +18,7 @@ interface IHistorical {
   market_cap: number;
 }
 interface CandleData {
-  x: number;
+  x: string;
   y: number[];
 }
 
@@ -37,14 +37,19 @@ function Price() {
     () => fetchCoinHistory(coinId)
     // { refetchInterval: 100000 }
   );
-  const chartData: CandleData[] | undefined = data?.map((item) => {
+  const chartData: CandleData[] | undefined = data?.map((data) => {
     return {
-      x: Number(item.time_close),
-      y: [item.open, item.high, item.low, item.close],
+      x: new Date(Number(data.time_close) * 1000).toDateString(),
+      y: [Number(data.open), Number(data.high), Number(data.low), Number(data.close)],
     };
   });
+  console.log(chartData);
 
   const options = {
+    themes: {
+      mode: "dark",
+      palette: "palette3",
+    },
     chart: {
       foreColor: "#fff",
       height: 300,
@@ -53,37 +58,25 @@ function Price() {
         show: false,
       },
     },
+    xaxis: {
+      axixTicks: { show: true },
+      labels: {
+        show: false,
+      },
+    },
     yaxis: {
       tooltip: {
         enabled: true,
       },
+      labels: {
+        formatter: function (val: number) {
+          return `$${val.toFixed(2)}`;
+        },
+      },
     },
   };
 
-  const series = [
-    {
-      data: [chartData as unknown as number],
-    },
-  ];
-  console.log(series);
-  return (
-    <ChartWarp>
-      {isLoading ? (
-        "Loading chart ... "
-      ) : (
-        <ApexChart
-          type="candlestick"
-          options={options}
-          series={[
-            {
-              data: [chartData as unknown as number],
-            },
-          ]}
-          height={300}
-        />
-      )}
-    </ChartWarp>
-  );
+  return <ChartWarp>{isLoading ? "Loading chart ... " : <ApexChart type="candlestick" options={options} series={[{ data: chartData }] as unknown as number[]} height={300} />}</ChartWarp>;
 }
 
 export default Price;

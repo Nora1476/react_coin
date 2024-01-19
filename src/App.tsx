@@ -1,7 +1,10 @@
 import { RouterProvider } from "react-router-dom";
 import Router from "./Router";
-import { createGlobalStyle } from "styled-components";
+import { ThemeProvider } from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import { ReactQueryDevtools } from "react-query/devtools";
+import { useState } from "react";
+import { darkTheme, lightTheme } from "./theme";
 
 //렌더링 될때 스타일 컴포넌트를 전역 스코프르 올려줌
 const GlobalStyle = createGlobalStyle`
@@ -44,6 +47,8 @@ body {
   font-family: 'Noto Sans KR', sans-serif;
   background-color: ${(props) => props.theme.bgColor};
   color: ${(props) => props.theme.textColor};
+  position:relative;
+  min-width: 840px;
 }
 menu, ol, ul {
   list-style: none;
@@ -62,18 +67,51 @@ table {
 }
 a{
   text-decoration: none;
-  color:inherit
+  color:#2d3436
 }
 `;
 
+const BtnTheme = styled.div`
+  width: 100px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid ${(props) => props.theme.borderColor};
+  border-radius: 15px;
+  position: fixed;
+  left: 80px;
+  bottom: 20px;
+  cursor: pointer;
+  span {
+    display: block;
+  }
+`;
+
 function App() {
+  const [theme, setTheme] = useState("dark");
+  const isDark = theme === "dark";
+
+  const toggleTheme = () => {
+    if (theme === "light") {
+      setTheme("dark");
+    } else {
+      setTheme("light");
+    }
+  };
   //router 렌더링
   return (
-    <>
-      <GlobalStyle />
-      <RouterProvider router={Router} />;
-      <ReactQueryDevtools initialIsOpen={true} />
-    </>
+    <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
+      <>
+        <GlobalStyle />
+        <RouterProvider router={Router} />;
+        <ReactQueryDevtools initialIsOpen={true} />
+        <BtnTheme onClick={toggleTheme}>
+          <span className="material-symbols-outlined">nightlight</span>
+          <span className="material-symbols-outlined">light_mode</span>
+        </BtnTheme>
+      </>
+    </ThemeProvider>
   );
 }
 
