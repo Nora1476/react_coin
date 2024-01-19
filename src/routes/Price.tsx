@@ -40,7 +40,7 @@ function Price() {
   const chartData: CandleData[] | undefined = data?.map((item) => {
     return {
       x: Number(item.time_close),
-      y: [Number(item.open), Number(item.high), Number(item.low), Number(item.close)],
+      y: [item.open, item.high, item.low, item.close],
     };
   });
 
@@ -65,7 +65,25 @@ function Price() {
       data: [chartData as unknown as number],
     },
   ];
-  return <ChartWarp>{isLoading ? "Loading chart ... " : <ApexChart type="candlestick" options={options} series={series[0].data} height={300} />}</ChartWarp>;
+  console.log(series);
+  return (
+    <ChartWarp>
+      {isLoading ? (
+        "Loading chart ... "
+      ) : (
+        <ApexChart
+          type="candlestick"
+          options={options}
+          series={[
+            {
+              data: [chartData as unknown as number],
+            },
+          ]}
+          height={300}
+        />
+      )}
+    </ChartWarp>
+  );
 }
 
 export default Price;
