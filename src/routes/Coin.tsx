@@ -29,6 +29,11 @@ const Header = styled.header`
   gap: 30px;
   margin: 28px 0;
 `;
+const LinkWrap = styled.div`
+  span {
+    color: ${(props) => props.theme.accentColor};
+  }
+`;
 const Overview = styled.div`
   display: flex;
   justify-content: space-between;
@@ -67,6 +72,9 @@ const Tab = styled.span<{ $isActive: boolean }>`
   padding: 8px;
   border-radius: 10px;
   color: ${(props) => (props.$isActive ? props.theme.accentColor : props.theme.textColor)};
+  a {
+    color: ${(props) => (props.$isActive ? props.theme.accentColor : props.theme.textColor)};
+  }
 `;
 
 interface RouteParams {
@@ -166,7 +174,11 @@ function Coin() {
         {/*  ?. dl syntax는  satate애 name 있는지 없는지를 확인하고 실행여부 결정
               즉, state 내에 name이 없으면 제일앞에 3항 연산자는 false로 출력되어 loading 부분 실행 */}
         <Title>{state?.name ? state.name : loading ? "Loading..." : infoData?.name}</Title>
-        <Link to={`${process.env.PUBLIC_URL}/`}> &larr; Back to List </Link>
+        <LinkWrap>
+          <Link to={`${process.env.PUBLIC_URL}/`}>
+            <span> &larr; Back to List</span>{" "}
+          </Link>
+        </LinkWrap>
       </Header>
       {loading ? (
         <Loader>Loading...</Loader>
@@ -199,10 +211,14 @@ function Coin() {
           </Overview>
           <Tabs>
             <Tab $isActive={charMatch !== null}>
-              <Link to={`/${coinId}/chart`}>Chart</Link>
+              <Link to={`/${coinId}/chart`} className="tapLink">
+                Chart
+              </Link>
             </Tab>
             <Tab $isActive={priceMatch !== null}>
-              <Link to={`/${coinId}/price`}>price</Link>
+              <Link to={`/${coinId}/price`} className="tapLink">
+                price
+              </Link>
             </Tab>
           </Tabs>
 

@@ -90,7 +90,7 @@ const BtnTheme = styled.div`
 
 function App() {
   const [theme, setTheme] = useState("dark");
-  const isDark = theme === "dark";
+  // const isDark = theme === "dark";
 
   const toggleTheme = () => {
     if (theme === "light") {
