@@ -79,7 +79,7 @@ const BtnTheme = styled.div`
   align-items: center;
   border: 2px solid ${(props) => props.theme.borderColor};
   border-radius: 15px;
-  position: sticky;
+  position: fixed;
   left: 20px;
   bottom: 20px;
   cursor: pointer;
