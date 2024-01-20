@@ -51,7 +51,7 @@ function Price() {
       palette: "palette3",
     },
     chart: {
-      foreColor: "#fff",
+      foreColor: "#000",
       height: 300,
       width: 500,
       toolbar: {
