@@ -72,15 +72,15 @@ a{
 `;
 
 const BtnTheme = styled.div`
-  width: 100px;
+  width: 80px;
   height: 60px;
   display: flex;
   justify-content: center;
   align-items: center;
   border: 2px solid ${(props) => props.theme.borderColor};
   border-radius: 15px;
-  position: fixed;
-  left: 80px;
+  position: sticky;
+  left: 20px;
   bottom: 20px;
   cursor: pointer;
   span {
@@ -90,13 +90,12 @@ const BtnTheme = styled.div`
 
 function App() {
   const [theme, setTheme] = useState("dark");
-  // const isDark = theme === "dark";
 
   const toggleTheme = () => {
-    if (theme === "light") {
-      setTheme("dark");
-    } else {
+    if (theme === "dark") {
       setTheme("light");
+    } else {
+      setTheme("dark");
     }
   };
   //router 렌더링
@@ -107,8 +106,7 @@ function App() {
         <RouterProvider router={Router} />;
         <ReactQueryDevtools initialIsOpen={true} />
         <BtnTheme onClick={toggleTheme}>
-          <span className="material-symbols-outlined">nightlight</span>
-          <span className="material-symbols-outlined">light_mode</span>
+          <span className="material-symbols-outlined">{theme === "dark" ? "light_mode" : "darK_mode"}</span>
         </BtnTheme>
       </>
     </ThemeProvider>

@@ -6,15 +6,15 @@ export const darkTheme: DefaultTheme = {
   textColor: "#f5f6fa",
   accentColor: "#8c7ae6",
   buttonColor: "#2f3640",
-  borderColor: "#f5f5f5",
+  borderColor: "#ecf0f1",
 };
 
 export const lightTheme: DefaultTheme = {
   bgColor: "#ecf0f1",
   textColor: "#2d3436",
-  accentColor: "#d35400",
-  buttonColor: "#2f3640",
-  borderColor: "#f5f5f5",
+  accentColor: "#b33939",
+  buttonColor: "#a4b0be",
+  borderColor: "#2f3542",
 };
 
 export const theme = {
