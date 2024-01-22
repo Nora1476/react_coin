@@ -3,6 +3,8 @@ import { useOutletContext } from "react-router-dom";
 import { fetchCoinHistory } from "../api";
 import ApexChart from "react-apexcharts";
 import styled from "styled-components";
+import { useRecoilValue } from "recoil";
+import { isDarkAtom } from "../atoms";
 
 interface ChartProps {
   coinId: string;
@@ -30,6 +32,7 @@ const ChartWarp = styled.div`
 `;
 
 function Price() {
+  const isDark = useRecoilValue(isDarkAtom);
   // 상위 컴포넌트 Coin애서 outlet을 이용하여 coinId보낸 인자를 받음
   const { coinId } = useOutletContext<ChartProps>();
   const { isLoading, data } = useQuery<IHistorical[]>(
@@ -54,11 +57,11 @@ function Price() {
           type="candlestick"
           options={{
             theme: {
-              mode: "dark",
-              palette: "palette3",
+              mode: isDark ? "dark" : "light",
             },
             chart: {
               foreColor: "#000",
+              background: "rgba(170, 166, 157,0.5)",
               height: 300,
               width: 500,
               toolbar: {

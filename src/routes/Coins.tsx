@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { fetchCoins } from "../api";
 import { Helmet } from "react-helmet";
+import { useSetRecoilState } from "recoil";
+import { isDarkAtom } from "../atoms";
 
 const Container = styled.div`
   padding: 0 20px;
@@ -59,15 +61,12 @@ interface ICoin {
   type: string;
 }
 
-// interface ToggleDarkType {
-//   toggleDark: () => void;
-// }
-
 function Coins() {
+  const setDakrAtom = useSetRecoilState(isDarkAtom);
+  const toggleDarkAtom = () => setDakrAtom((prev) => !prev);
   //useQUery 훅은 fetchCoin함수를 부르고
   //로딩여부는 isLoading으로 알려주고 결괏값을 data 알려줌
   const { isLoading, data } = useQuery<ICoin[]>(["allCoins"], fetchCoins);
-  // const { toggleDark } = useOutletContext<ToggleDarkType>();
 
   return (
     <Container>
@@ -76,7 +75,7 @@ function Coins() {
       </Helmet>
       <Header>
         <Title>Coins</Title>
-        <button>Toggle Theme</button>
+        <button onClick={toggleDarkAtom}>Toggle Theme</button>
       </Header>
       {isLoading ? (
         <Loader>Loading...</Loader>

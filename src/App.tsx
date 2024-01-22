@@ -3,8 +3,9 @@ import Router from "./Router";
 import { ThemeProvider } from "styled-components";
 import styled, { createGlobalStyle } from "styled-components";
 import { ReactQueryDevtools } from "react-query/devtools";
-import { useState } from "react";
 import { darkTheme, lightTheme } from "./theme";
+import { isDarkAtom } from "./atoms";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 //렌더링 될때 스타일 컴포넌트를 전역 스코프르 올려줌
 const GlobalStyle = createGlobalStyle`
@@ -69,6 +70,10 @@ a{
   text-decoration: none;
   color:#2d3436
 }
+.apexcharts-canvas > svg {
+    /* background-color: transparent !important; */
+    border-radius: 12px;
+}
 `;
 
 const BtnTheme = styled.div`
@@ -89,11 +94,9 @@ const BtnTheme = styled.div`
 `;
 
 function App() {
-  const [isDark, setIsDark] = useState(true);
-
-  const toggleDark = () => setIsDark((current) => !current);
-  console.log("실패");
-  console.log(setIsDark);
+  const setDakrAtom = useSetRecoilState(isDarkAtom);
+  const toggleDarkAtom = () => setDakrAtom((prev) => !prev);
+  const isDark = useRecoilValue(isDarkAtom);
   //router 렌더링
   return (
     // ThemeProvider는 styled-component의 하나의 컴포턴트 이며 속성으로 theme오브젝트 입력은 필수
@@ -103,8 +106,10 @@ function App() {
         <GlobalStyle />
         <RouterProvider router={Router} />;
         <ReactQueryDevtools initialIsOpen={true} />
-        <BtnTheme onClick={toggleDark}>
-          <span className="material-symbols-outlined">{isDark ? "light_mode" : "darK_mode"}</span>
+        <BtnTheme>
+          <span onClick={toggleDarkAtom} className="material-symbols-outlined">
+            {isDark ? "light_mode" : "dark_mode"}
+          </span>
         </BtnTheme>
       </>
     </ThemeProvider>

@@ -4,6 +4,8 @@ import { useOutletContext } from "react-router";
 import { fetchCoinHistory } from "../api";
 import ApexChart from "react-apexcharts";
 import styled from "styled-components";
+import { useRecoilValue } from "recoil";
+import { isDarkAtom } from "../atoms";
 
 interface ChartProps {
   coinId: string;
@@ -18,10 +20,6 @@ interface IHistorical {
   volume: number;
   market_cap: number;
 }
-interface ToggleDarkType {
-  isDark: boolean;
-}
-
 const ChartWarp = styled.div`
   .apexcharts-tooltip {
     background: #f3f3f3;
@@ -30,8 +28,8 @@ const ChartWarp = styled.div`
 `;
 
 function Chart() {
+  const isDark = useRecoilValue(isDarkAtom);
   // 상위 컴포넌트 Coin애서 outlet을 이용하여 coinId보낸 인자를 받음
-  const { isDark } = useOutletContext<ToggleDarkType>();
   const { coinId } = useOutletContext<ChartProps>();
   const { isLoading, data } = useQuery<IHistorical[]>(
     ["ohlcv", coinId],
@@ -58,6 +56,7 @@ function Chart() {
             },
             chart: {
               foreColor: "#fff",
+              background: "rgba(170, 166, 157,0.5)",
               height: 300,
               width: 500,
               toolbar: {
@@ -103,46 +102,3 @@ function Chart() {
 }
 
 export default Chart;
-
-//   {
-//   theme: {
-//     mode: "light",
-//   },
-//   chart: {
-//     foreColor: "#fff",
-//     height: 300,
-//     width: 500,
-//     toolbar: {
-//       show: false,
-//     },
-//   },
-//   grid: { show: false },
-//   yaxis: {
-//     show: false,
-//     labels: {
-//       formatter: function (val: number) {
-//         return val.toFixed(2);
-//       },
-//     },
-//   },
-//   xaxis: {
-//     labels: { show: false },
-//     categories: data?.map((price) => new Date(Number(price.time_close) * 1000).toDateString()),
-//   },
-//   fill: {
-//     type: "gradient",
-//     gradient: { gradientToColors: ["#0be881"], stops: [0, 100] },
-//   },
-//   colors: ["#0fbcf9"],
-//   tooltip: {
-//     enabled: true,
-//     style: {
-//       fontSize: "16px",
-//     },
-//     y: {
-//       formatter: function (val: number) {
-//         return `$ ${val.toFixed(2)}`;
-//       },
-//     },
-//   },
-// }
