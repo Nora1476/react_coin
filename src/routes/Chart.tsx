@@ -18,6 +18,9 @@ interface IHistorical {
   volume: number;
   market_cap: number;
 }
+interface ToggleDarkType {
+  isDark: boolean;
+}
 
 const ChartWarp = styled.div`
   .apexcharts-tooltip {
@@ -28,56 +31,14 @@ const ChartWarp = styled.div`
 
 function Chart() {
   // 상위 컴포넌트 Coin애서 outlet을 이용하여 coinId보낸 인자를 받음
+  const { isDark } = useOutletContext<ToggleDarkType>();
   const { coinId } = useOutletContext<ChartProps>();
   const { isLoading, data } = useQuery<IHistorical[]>(
     ["ohlcv", coinId],
     () => fetchCoinHistory(coinId)
     // { refetchInterval: 100000 }
   );
-  const options = {
-    themes: {
-      mode: "dark",
-      palette: "palette3",
-    },
-    chart: {
-      foreColor: "#fff",
-      height: 300,
-      width: 500,
-      toolbar: {
-        show: false,
-      },
-    },
-    grid: { show: false },
-    yaxis: {
-      show: false,
-      labels: {
-        formatter: function (val: number) {
-          return val.toFixed(2);
-        },
-      },
-    },
-    xaxis: {
-      axixTicks: { show: true },
-      labels: { show: false },
-      categories: data?.map((price) => new Date(Number(price.time_close) * 1000).toDateString()),
-    },
-    fill: {
-      type: "gradient",
-      gradient: { gradientToColors: ["#0be881"], stops: [0, 100] },
-    },
-    colors: ["#0fbcf9"],
-    tooltip: {
-      enabled: true,
-      style: {
-        fontSize: "16px",
-      },
-      y: {
-        formatter: function (val: number) {
-          return `$ ${val.toFixed(2)}`;
-        },
-      },
-    },
-  };
+
   const series = [
     {
       name: "Price",
@@ -85,7 +46,103 @@ function Chart() {
     },
   ];
 
-  return <ChartWarp>{isLoading ? "Loading chart ... " : <ApexChart type="line" options={options} series={series} height={300} />}</ChartWarp>;
+  return (
+    <ChartWarp>
+      {isLoading ? (
+        "Loading chart ... "
+      ) : (
+        <ApexChart
+          options={{
+            theme: {
+              mode: isDark ? "dark" : "light",
+            },
+            chart: {
+              foreColor: "#fff",
+              height: 300,
+              width: 500,
+              toolbar: {
+                show: false,
+              },
+            },
+            grid: { show: false },
+            yaxis: {
+              show: false,
+              labels: {
+                formatter: function (val: number) {
+                  return val.toFixed(2);
+                },
+              },
+            },
+            xaxis: {
+              labels: { show: false },
+              categories: data?.map((price) => new Date(Number(price.time_close) * 1000).toDateString()),
+            },
+            fill: {
+              type: "gradient",
+              gradient: { gradientToColors: ["#0be881"], stops: [0, 100] },
+            },
+            colors: ["#0fbcf9"],
+            tooltip: {
+              enabled: true,
+              style: {
+                fontSize: "16px",
+              },
+              y: {
+                formatter: function (val: number) {
+                  return `$ ${val.toFixed(2)}`;
+                },
+              },
+            },
+          }}
+          series={series}
+          height={300}
+        />
+      )}
+    </ChartWarp>
+  );
 }
 
 export default Chart;
+
+//   {
+//   theme: {
+//     mode: "light",
+//   },
+//   chart: {
+//     foreColor: "#fff",
+//     height: 300,
+//     width: 500,
+//     toolbar: {
+//       show: false,
+//     },
+//   },
+//   grid: { show: false },
+//   yaxis: {
+//     show: false,
+//     labels: {
+//       formatter: function (val: number) {
+//         return val.toFixed(2);
+//       },
+//     },
+//   },
+//   xaxis: {
+//     labels: { show: false },
+//     categories: data?.map((price) => new Date(Number(price.time_close) * 1000).toDateString()),
+//   },
+//   fill: {
+//     type: "gradient",
+//     gradient: { gradientToColors: ["#0be881"], stops: [0, 100] },
+//   },
+//   colors: ["#0fbcf9"],
+//   tooltip: {
+//     enabled: true,
+//     style: {
+//       fontSize: "16px",
+//     },
+//     y: {
+//       formatter: function (val: number) {
+//         return `$ ${val.toFixed(2)}`;
+//       },
+//     },
+//   },
+// }

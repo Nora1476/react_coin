@@ -89,24 +89,22 @@ const BtnTheme = styled.div`
 `;
 
 function App() {
-  const [theme, setTheme] = useState("dark");
+  const [isDark, setIsDark] = useState(true);
 
-  const toggleTheme = () => {
-    if (theme === "dark") {
-      setTheme("light");
-    } else {
-      setTheme("dark");
-    }
-  };
+  const toggleDark = () => setIsDark((current) => !current);
+  console.log("실패");
+  console.log(setIsDark);
   //router 렌더링
   return (
-    <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
+    // ThemeProvider는 styled-component의 하나의 컴포턴트 이며 속성으로 theme오브젝트 입력은 필수
+    // ThemeProvider 자식 태그는 부모요소의 객체게 접근가능하다
+    <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
       <>
         <GlobalStyle />
         <RouterProvider router={Router} />;
         <ReactQueryDevtools initialIsOpen={true} />
-        <BtnTheme onClick={toggleTheme}>
-          <span className="material-symbols-outlined">{theme === "dark" ? "light_mode" : "darK_mode"}</span>
+        <BtnTheme onClick={toggleDark}>
+          <span className="material-symbols-outlined">{isDark ? "light_mode" : "darK_mode"}</span>
         </BtnTheme>
       </>
     </ThemeProvider>

@@ -45,38 +45,49 @@ function Price() {
   });
   console.log(chartData);
 
-  const options = {
-    themes: {
-      mode: "dark",
-      palette: "palette3",
-    },
-    chart: {
-      foreColor: "#000",
-      height: 300,
-      width: 500,
-      toolbar: {
-        show: false,
-      },
-    },
-    xaxis: {
-      axixTicks: { show: true },
-      labels: {
-        show: false,
-      },
-    },
-    yaxis: {
-      tooltip: {
-        enabled: true,
-      },
-      labels: {
-        formatter: function (val: number) {
-          return `$${val.toFixed(2)}`;
-        },
-      },
-    },
-  };
-
-  return <ChartWarp>{isLoading ? "Loading chart ... " : <ApexChart type="candlestick" options={options} series={[{ data: chartData }] as unknown as number[]} height={300} />}</ChartWarp>;
+  return (
+    <ChartWarp>
+      {isLoading ? (
+        "Loading chart ... "
+      ) : (
+        <ApexChart
+          type="candlestick"
+          options={{
+            theme: {
+              mode: "dark",
+              palette: "palette3",
+            },
+            chart: {
+              foreColor: "#000",
+              height: 300,
+              width: 500,
+              toolbar: {
+                show: false,
+              },
+            },
+            xaxis: {
+              // axixTicks: { show: true },
+              labels: {
+                show: false,
+              },
+            },
+            yaxis: {
+              tooltip: {
+                enabled: true,
+              },
+              labels: {
+                formatter: function (val: number) {
+                  return `$${val.toFixed(2)}`;
+                },
+              },
+            },
+          }}
+          series={[{ data: chartData }] as unknown as number[]}
+          height={300}
+        />
+      )}
+    </ChartWarp>
+  );
 }
 
 export default Price;
